@@ -1,6 +1,6 @@
 🏥 MediAssist – AI Powered Medical Assistant
 
-An AI-powered Android application that provides basic first-aid guidance, emergency assistance features, and real-time medical support tools.
+An AI-powered Android application that provides basic first-aid guidance, emergency assistance features, and real-time medical support tools.it can sent emergency request to added contacts via messages 
 
 📱 Overview
 
