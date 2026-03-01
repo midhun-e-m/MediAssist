@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_profile"
+        android:title="Profile"/>
+
+    <item
+        android:id="@+id/nav_contacts"
+        android:title="Emergency Contacts"/>
+
+    <item
+        android:id="@+id/nav_chat"
+        android:title="Medical Assistant"/>
+
+    <item
+        android:id="@+id/nav_nearby"
+        android:title="Nearby Hospitals"/>
+
+
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Logout"/>
+
+</menu>

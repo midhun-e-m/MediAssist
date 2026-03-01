@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F9FA"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- HEADER -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Emergency Contacts"
+            android:textColor="@color/colorPrimary"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Who should we notify in an emergency?"
+            android:textColor="#757575"
+            android:textSize="14sp" />
+
+        <!-- ADD CONTACT CARD -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Emergency Contact"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"
+                    android:textColor="#333333" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select from Contacts"
+                    android:textAllCaps="false"
+                    app:icon="@android:drawable/ic_menu_call"
+                    app:iconPadding="8dp"
+                    app:cornerRadius="24dp"
+                    app:backgroundTint="#E3F2FD"
+                    app:iconTint="@color/colorPrimary"
+                    android:textColor="@color/colorPrimary" />
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- CONTACT LIST -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@android:color/white">
+
+            <ListView
+                android:id="@+id/listContacts"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:divider="#EEEEEE"
+                android:dividerHeight="1dp"
+                android:padding="8dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- SAVE -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveContacts"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Save Emergency Contacts"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/colorPrimary"
+            app:cornerRadius="28dp" />
+
+    </LinearLayout>
+</ScrollView>

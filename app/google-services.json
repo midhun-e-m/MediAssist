@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "671738151876",
+    "project_id": "mediassist-35f40",
+    "storage_bucket": "mediassist-35f40.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:671738151876:android:204b5beb3b08e47d8eda91",
+        "android_client_info": {
+          "package_name": "com.mediassist.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "671738151876-7cvgb2lnvo1dufnkpbtr0udnfbfu2lcb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mediassist.app",
+            "certificate_hash": "ae280f340ce8dae5fb439fe00fa9c59bc1a4e4a0"
+          }
+        },
+        {
+          "client_id": "671738151876-l6ga62ltlg17ghv6u2e74qjgrp69f01q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mediassist.app",
+            "certificate_hash": "44f48e4620aaea981c1e338b744a902176224ba2"
+          }
+        },
+        {
+          "client_id": "671738151876-lqf9gft5pjbl1gevc0id7sl428t0ct5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWIBdJ7lWOv7omxjDfuzJrpsRo0vYZ98w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "671738151876-crfhobk23qd0u3qpe0blgkn0s9i3hqdc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

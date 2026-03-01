@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Brand Blues -->
+    <color name="blue_primary">#1E88E5</color>
+    <color name="blue_dark">#1565C0</color>
+
+    <!-- Backgrounds -->
+    <color name="bg_white">#FFFFFF</color>
+    <color name="bg_light">#F5F8FD</color>
+
+    <!-- Text -->
+    <color name="text_primary">#1F2937</color>
+    <color name="text_secondary">#6B7280</color>
+
+    <!-- Status -->
+    <color name="status_pending">#F59E0B</color>
+    <color name="status_approved">#16A34A</color>
+
+    <!-- Misc -->
+    <color name="divider">#E5E7EB</color>
+    <color name="colorPrimary">#1976D2</color>
+
+    <color name="success_green">#2E7D32</color>
+    <color name="warning_orange">#F57C00</color>
+
+
+</resources>

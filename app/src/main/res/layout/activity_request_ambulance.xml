@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFEBEE"
+    android:fillViewport="true"
+    tools:context=".ui.user.RequestAmbulanceActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:src="@android:drawable/ic_dialog_alert"
+            app:tint="#D32F2F" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="EMERGENCY"
+            android:textColor="#D32F2F"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="48dp"
+            android:gravity="center"
+            android:text="Do you need immediate medical assistance?"
+            android:textColor="#546E7A"
+            android:textSize="16sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRequestAmbulance"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_marginBottom="48dp"
+            android:text="TAP FOR\nAMBULANCE"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:backgroundTint="#D32F2F"
+            app:cornerRadius="125dp"
+            app:elevation="12dp"
+            app:rippleColor="#FFFFFF"
+            app:strokeColor="#B71C1C"
+            app:strokeWidth="4dp" />
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:text="What happens when you tap?"
+                    android:textColor="#37474F"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:drawablePadding="12dp"
+                    android:text="• Alerts your Emergency Contacts"
+                    android:textColor="#546E7A"
+                    android:textSize="14sp"
+                    app:drawableStartCompat="@android:drawable/btn_star_big_on"
+                    app:drawableTint="#FBC02D" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:drawablePadding="12dp"
+                    android:text="• Requests nearby Ambulance"
+                    android:textColor="#546E7A"
+                    android:textSize="14sp"
+                    app:drawableStartCompat="@android:drawable/ic_menu_directions"
+                    app:drawableTint="#1976D2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="12dp"
+                    android:text="• Shares your Live Location"
+                    android:textColor="#546E7A"
+                    android:textSize="14sp"
+                    app:drawableStartCompat="@android:drawable/ic_menu_mylocation"
+                    app:drawableTint="#4CAF50" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="False alarms may lead to account suspension."
+            android:textColor="#757575"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+</ScrollView>

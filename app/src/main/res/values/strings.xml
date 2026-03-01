@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MediAssist</string>
+    <string name="default_web_client_id">
+        671738151876-crfhobk23qd0u3qpe0blgkn0s9i3hqdc.apps.googleusercontent.com
+    </string>
+    <string-array name="ambulance_types">
+        <item>Basic Ambulance</item>
+        <item>ICU Ambulance</item>
+    </string-array>
+    <string name="open_drawer">Open navigation drawer</string>
+    <string name="close_drawer">Close navigation drawer</string>
+
+    <string name="maps_android_key">AIzaSyClk09Livr_bxOL_9TfnSMgBo2zYf5W7KQ</string>
+    <string name="places_rest_key">AIzaSyCg7ozYUm1tsN8_K1DUxMApEUU8qIS0JHY</string>
+
+
+</resources>

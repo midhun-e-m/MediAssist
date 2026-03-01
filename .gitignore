@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+
+# Local config (VERY IMPORTANT - hides API keys)
+local.properties
+
+# Android Studio
+.idea/
+*.iml
+
+# Generated files
+captures/
+.externalNativeBuild/
+.cxx/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Keystore files
+*.jks
+*.keystore
+
+# Logs
+*.log
