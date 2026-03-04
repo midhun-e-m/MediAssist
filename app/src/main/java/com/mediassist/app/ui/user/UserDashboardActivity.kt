@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.mediassist.app.R
 import com.mediassist.app.ui.auth.LoginActivity
 import com.mediassist.app.viewmodel.UserViewModel
+import com.mediassist.app.services.SensorMonitoringService
+
 
 class UserDashboardActivity : AppCompatActivity() {
 
@@ -31,6 +33,12 @@ class UserDashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        ContextCompat.startForegroundService(
+            this,
+            Intent(this, SensorMonitoringService::class.java)
+        )
+
         setContentView(R.layout.activity_user_dashboard)
 
         // ================= GOOGLE SIGN-IN CLIENT =================

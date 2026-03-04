@@ -41,6 +41,12 @@ class RequestAmbulanceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_request_ambulance)
 
+        val autoTrigger = intent.getBooleanExtra("AUTO_TRIGGER", false)
+
+        if (autoTrigger) {
+            findViewById<Button>(R.id.btnRequestAmbulance).performClick()
+        }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         findViewById<Button>(R.id.btnRequestAmbulance).setOnClickListener {
