@@ -41,15 +41,11 @@ class RequestAmbulanceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_request_ambulance)
 
-        val autoTrigger = intent.getBooleanExtra("AUTO_TRIGGER", false)
-
-        if (autoTrigger) {
-            findViewById<Button>(R.id.btnRequestAmbulance).performClick()
-        }
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        findViewById<Button>(R.id.btnRequestAmbulance).setOnClickListener {
+        val btnRequest = findViewById<Button>(R.id.btnRequestAmbulance)
+
+        btnRequest.setOnClickListener {
 
             val uid = FirebaseAuth.getInstance().currentUser?.uid
             if (uid == null) {
@@ -82,6 +78,15 @@ class RequestAmbulanceActivity : AppCompatActivity() {
                 Toast.makeText(this, "Locking GPS... Please wait.", Toast.LENGTH_SHORT).show()
                 startLocationUpdates(contacts)
             }
+        }
+
+        // 🔥 AUTO TRIGGER AFTER LISTENER IS ATTACHED
+        val autoTrigger = intent.getBooleanExtra("AUTO_TRIGGER", false)
+
+        if (autoTrigger) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                btnRequest.performClick()
+            }, 500)
         }
     }
 
