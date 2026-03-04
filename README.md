@@ -1,94 +1,97 @@
-🏥 MediAssist – AI Powered Medical Assistant
+# 🏥 MediAssist – AI Powered Medical Assistant
 
-An AI-powered Android application that provides basic first-aid guidance, emergency assistance features, and real-time medical support tools.it can sent emergency request to added contacts via messages 
+MediAssist is an AI-powered Android application designed to provide **basic first-aid guidance, emergency assistance tools, and location-based medical support**.  
 
-📱 Overview
+The application combines **AI, mobile development, and real-world emergency utilities** to create an intelligent healthcare assistant.
 
-MediAssist is an Android application built using Kotlin that integrates:
+---
 
-🤖 AI-powered first aid assistant (Groq LLM)
+# 📱 Overview
 
-🔐 Firebase Authentication
+MediAssist is built using **Kotlin for Android** and integrates several modern technologies including AI models, Firebase services, and location-based hospital discovery.
 
-🗺 Nearby hospitals with OpenStreetMap
+The application provides:
 
-🚑 Emergency contacts & quick actions
+- AI-based first-aid assistance
+- Emergency contact notifications
+- Nearby hospital discovery
+- Secure user authentication
+- Real-time location services
 
-📦 Real-time features & tracking modules
+---
 
-The goal of this project is to combine AI + mobile development + real-world emergency utility into a single intelligent healthcare assistant.
+# 🚀 Features
 
-🚀 Features
-🤖 AI Medical Assistant
+## 🤖 AI Medical Assistant
+- Integrated **Groq API (Llama 3.3 70B)**
+- Provides **basic first-aid guidance**
+- Avoids medical diagnosis
+- Handles emergency escalation prompts
 
-Integrated Groq LLM (Llama 3.3 70B)
+## 🔐 Authentication
+- Firebase **Email/Password authentication**
+- Secure login and session management
 
-Provides basic first aid guidance
+## 🏥 Nearby Hospitals
+- **OpenStreetMap integration (OSMDroid)**
+- Location-based hospital listing
+- Road-based distance estimation
 
-Avoids medical diagnosis
+## 📞 Emergency Utilities
+- Emergency contact management
+- Sends **emergency SMS alerts to saved contacts**
+- Emergency history tracking
 
-Handles emergency escalation prompts
+## 📍 Location & Tracking
+- Real-time device location
+- Optional **driver / patient tracking modules**
 
-🔐 Authentication
+---
 
-Firebase Email/Password login
+# 🛠 Tech Stack
 
-Secure session handling
+| Layer | Technology |
+|------|------------|
+| Language | Kotlin |
+| Architecture | MVVM |
+| Networking | Retrofit + OkHttp |
+| AI Integration | Groq API (Llama 3.3 70B) |
+| Maps | OSMDroid (OpenStreetMap) |
+| Authentication | Firebase Auth |
+| Database | Firebase Firestore |
+| Async Operations | Kotlin Coroutines |
 
-🏥 Nearby Hospitals
+---
 
-OpenStreetMap integration (OSMDroid)
+# 🔐 Security Implementation
 
-Road-based distance calculation
+To ensure secure API handling:
 
-Location-based hospital listing
+- API keys stored in **local.properties**
+- Accessed via **BuildConfig**
+- Secrets excluded using **.gitignore**
+- No sensitive data committed to repository
 
-📞 Emergency Utilities
+---
 
-Quick access to emergency contacts
-
-Emergency history tracking
-
-📍 Location & Tracking
-
-Real-time location services
-
-Driver / patient modules (if enabled)
-
-🛠 Tech Stack
-Layer	Technology
-Language	Kotlin
-Architecture	MVVM (modular structure)
-Networking	Retrofit + OkHttp
-AI Integration	Groq API (Llama 3.3 70B)
-Maps	OSMDroid (OpenStreetMap)
-Authentication	Firebase Auth
-Database	Firebase Firestore
-Async	Kotlin Coroutines
-🔐 Security Implementation
-
-API keys stored securely in local.properties
-
-Accessed via BuildConfig
-
-Sensitive keys excluded using .gitignore
-
-No hardcoded secrets inside repository
-
-🏗 Architecture Overview
-
+# 🏗 Architecture Overview
 Android App
-→ Retrofit Network Layer
-→ Groq API (LLM)
+│
+├── UI Layer
+│
+├── ViewModel Layer
+│
+├── Repository Layer
+│
+└── Network Layer
+→ Groq API (AI Model)
 
-Firebase services handle:
+Firebase services manage:
 
-Authentication
+- Authentication
+- Firestore data storage
 
-Firestore data storage
-
-Modular package structure:
-
+Project package structure:
 ui/
 auth/
 driver/
@@ -96,53 +99,52 @@ user/
 data/
 remote/
 model/
-📸 Screenshots
 
+---
 
+# ⚙️ Setup Instructions
 
+1. Clone the repository
+   git clone https://github.com/your-username/mediassist.git
 
-⚙️ Setup Instructions
+2. Open the project in **Android Studio**
 
-Clone the repository
-
-Open in Android Studio
-
-Add your Groq API key inside:
-
-local.properties
+3. Add your **Groq API Key** inside `local.properties`
 GROQ_API_KEY=your_api_key_here
 
-Sync Gradle
+4. Sync Gradle
 
-Run on device/emulator
+5. Run the application on a device or emulator
 
-📌 Future Improvements
+---
 
-Backend proxy server for API key isolation
+# 📌 Future Improvements
 
-Offline first-aid knowledge caching
+- Backend proxy server for API key protection
+- Offline first-aid knowledge caching
+- Push notifications for emergency alerts
+- Improved UI/UX
+- Role-based dashboards
 
-Push notifications for emergency alerts
+---
 
-Improved UI/UX refinement
+# 🎯 Learning Outcomes
 
-Role-based dashboards
+Through this project I learned:
 
-🎯 Learning Outcomes
+- Secure API key handling in Android
+- AI model integration using REST APIs
+- Firebase Authentication & Firestore
+- OpenStreetMap integration without Google Maps
+- Structuring scalable Android applications
 
-Secure API key handling in Android
+---
 
-AI model integration using REST APIs
+# 👨‍💻 Developer
 
-Firebase authentication & Firestore usage
+**Midhun**  
+MCA Student | Backend Developer | Software developer
 
-OpenStreetMap integration without Google Maps
+---
 
-Handling real-world app architecture
-
-👨‍💻 Developer
-
-Midhun
-MCA Student | Android Developer | Backend Enthusiast
-
-⭐ If you found this project interesting, consider giving it a star!
+⭐ If you found this project useful, consider giving it a star!
