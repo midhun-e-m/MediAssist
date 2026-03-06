@@ -39,7 +39,7 @@
         <activity android:name=".ui.user.CartActivity" />
         <activity android:name=".ui.user.CheckoutActivity"/>
         <activity android:name=".ui.driver.DriverTrackingActivity"/>
-        <!--<activity android:name=".ui.user.PatientTrackingActivity"/>-->
+        <activity android:name=".ui.user.PatientTrackingActivity"/>
         <activity
             android:name=".ui.user.EmergencyContactsActivity"
             android:exported="false" />
