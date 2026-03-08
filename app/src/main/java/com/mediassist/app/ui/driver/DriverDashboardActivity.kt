@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.mediassist.app.R
+import com.mediassist.app.services.TrackingLocationService
 import com.mediassist.app.ui.auth.LoginActivity
 
 class DriverDashboardActivity : AppCompatActivity() {
@@ -52,7 +53,7 @@ class DriverDashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driver_dashboard)
 
-        // ================= GOOGLE SIGN-IN CLIENT =================
+        // Google SignIn
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -60,7 +61,7 @@ class DriverDashboardActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // ================= DRAWER SETUP =================
+        // Drawer
         drawerLayout = findViewById(R.id.drawerLayout)
         navigationView = findViewById(R.id.navigationView)
         toolbar = findViewById(R.id.toolbar)
@@ -81,17 +82,14 @@ class DriverDashboardActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
 
             when (item.itemId) {
-
-                R.id.nav_logout -> {
-                    logout()
-                }
+                R.id.nav_logout -> logout()
             }
 
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
 
-        // ================= DRIVER UI =================
+        // UI
         switchAvailability = findViewById(R.id.switchAvailability)
         tvStatus = findViewById(R.id.tvStatus)
         emergencyCard = findViewById(R.id.emergencyCard)
@@ -107,7 +105,7 @@ class DriverDashboardActivity : AppCompatActivity() {
         }
     }
 
-    // ================= PROPER LOGOUT =================
+    // ================= LOGOUT =================
     private fun logout() {
 
         emergencyListener?.remove()
@@ -118,8 +116,6 @@ class DriverDashboardActivity : AppCompatActivity() {
             redirectToLogin()
         }
     }
-
-
 
     // ================= GO ONLINE =================
     private fun goOnline() {
@@ -141,6 +137,7 @@ class DriverDashboardActivity : AppCompatActivity() {
                     "Driver not approved yet",
                     Toast.LENGTH_LONG
                 ).show()
+
                 switchAvailability.isChecked = false
                 return@addOnSuccessListener
             }
@@ -189,6 +186,7 @@ class DriverDashboardActivity : AppCompatActivity() {
                 }
 
                 val doc = snapshots.documents.first()
+
                 val emergencyId = doc.id
 
                 if (emergencyId == activeEmergencyId) return@addSnapshotListener
@@ -219,63 +217,43 @@ class DriverDashboardActivity : AppCompatActivity() {
         val driverRef = db.collection("drivers").document(driverId)
         val emergencyRef = db.collection("emergencies").document(emergencyId)
 
-        emergencyRef.get().addOnSuccessListener { doc ->
-
-            val patientId = doc.getString("patientId")
-            val patientLat = doc.getDouble("patientLat")
-            val patientLng = doc.getDouble("patientLng")
-
-            // 1️⃣ Update Firestore status
-            emergencyRef.update(
-                mapOf(
-                    "status" to "ACCEPTED",
-                    "assignedDriverId" to driverId
-                )
+        emergencyRef.update(
+            mapOf(
+                "status" to "ACCEPTED",
+                "assignedDriverId" to driverId
             )
+        )
 
-            // 2️⃣ Update driver availability
-            driverRef.update("availability", "BUSY")
+        driverRef.update("availability", "BUSY")
 
-            // 3️⃣ Create Realtime tracking node
-            if (patientId != null && patientLat != null && patientLng != null) {
+        // START LOCATION TRACKING
+        val serviceIntent = Intent(this, TrackingLocationService::class.java)
+        serviceIntent.putExtra("emergencyId", emergencyId)
 
-                val trackingRef = com.google.firebase.database.FirebaseDatabase
-                    .getInstance()
-                    .getReference("liveTracking")
-                    .child(emergencyId)
-
-                val trackingData = mapOf(
-                    "patientId" to patientId,
-                    "driverId" to driverId,
-                    "patientLat" to patientLat,
-                    "patientLng" to patientLng
-                )
-
-                trackingRef.setValue(trackingData)
-            }
-
-            tvStatus.text = "BUSY"
-            tvStatus.setTextColor(getColor(android.R.color.holo_orange_light))
-
-            Toast.makeText(this, "Emergency Accepted", Toast.LENGTH_SHORT).show()
-
-            emergencyCard.visibility = View.GONE
-
-            // 4️⃣ Open tracking screen
-            val intent = Intent(this, DriverTrackingActivity::class.java)
-            intent.putExtra("requestId", emergencyId)
-            startActivity(intent)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
         }
+
+        val intent = Intent(this, DriverTrackingActivity::class.java)
+        intent.putExtra("emergencyId", emergencyId)
+        startActivity(intent)
     }
 
     private fun redirectToLogin() {
+
         val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        intent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
         startActivity(intent)
         finish()
     }
 
     override fun onBackPressed() {
+
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {

@@ -1,46 +1,110 @@
 package com.mediassist.app.services
 
-import android.annotation.SuppressLint
-import android.app.Service
+import android.Manifest
+import android.app.*
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
 import android.os.IBinder
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.mediassist.app.R
 
 class TrackingLocationService : Service() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
-    private var requestId: String? = null
-    private var userType: String? = null // "DRIVER" or "PATIENT"
+
+    private var emergencyId: String? = null
+
+    private val firestore = FirebaseFirestore.getInstance()
+
+    companion object {
+        const val CHANNEL_ID = "tracking_channel"
+        const val NOTIFICATION_ID = 101
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        createNotificationChannel()
+
+        startForeground(
+            NOTIFICATION_ID,
+            createNotification()
+        )
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        requestId = intent?.getStringExtra("requestId")
-        userType = intent?.getStringExtra("userType")
+        emergencyId = intent?.getStringExtra("emergencyId")
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        if (emergencyId == null) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
 
         startLocationUpdates()
 
         return START_STICKY
     }
 
-    @SuppressLint("MissingPermission")
+    private fun createNotification(): Notification {
+
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("MediAssist Tracking")
+            .setContentText("Sharing ambulance location")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+    }
+
+    private fun createNotificationChannel() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val serviceChannel = NotificationChannel(
+                CHANNEL_ID,
+                "Tracking Service",
+                NotificationManager.IMPORTANCE_LOW
+            )
+
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(serviceChannel)
+        }
+    }
+
     private fun startLocationUpdates() {
 
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            stopSelf()
+            return
+        }
+
         val locationRequest = LocationRequest.Builder(
-            Priority.PRIORITY_HIGH_ACCURACY, 3000
-        ).build()
+            Priority.PRIORITY_HIGH_ACCURACY,
+            3000
+        )
+            .setMinUpdateIntervalMillis(2000)
+            .build()
 
         locationCallback = object : LocationCallback() {
+
             override fun onLocationResult(result: LocationResult) {
-                val location = result.lastLocation
-                if (location != null && requestId != null) {
-                    updateLocation(location)
-                }
+
+                val location: Location = result.lastLocation ?: return
+                val id = emergencyId ?: return
+
+                updateDriverLocation(id, location)
             }
         }
 
@@ -51,26 +115,31 @@ class TrackingLocationService : Service() {
         )
     }
 
-    private fun updateLocation(location: Location) {
+    private fun updateDriverLocation(emergencyId: String, location: Location) {
 
-        val trackingRef = FirebaseDatabase.getInstance()
-            .getReference("liveTracking")
-            .child(requestId!!)
-
-        val updates = if (userType == "DRIVER") {
-            mapOf(
-                "driverLat" to location.latitude,
-                "driverLng" to location.longitude
+        firestore.collection("emergencies")
+            .document(emergencyId)
+            .update(
+                mapOf(
+                    "driverLat" to location.latitude,
+                    "driverLng" to location.longitude,
+                    "driverUpdatedAt" to System.currentTimeMillis()
+                )
             )
-        } else {
-            mapOf(
-                "patientLat" to location.latitude,
-                "patientLng" to location.longitude
-            )
-        }
-
-        trackingRef.updateChildren(updates)
+            .addOnFailureListener {
+                it.printStackTrace()
+            }
     }
 
-    override fun onBind(intent: Intent?): IBinder? = null
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (::locationCallback.isInitialized) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+        }
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
+    }
 }
