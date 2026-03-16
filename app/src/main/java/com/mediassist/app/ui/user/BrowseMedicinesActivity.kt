@@ -74,6 +74,12 @@ class BrowseMedicinesActivity : AppCompatActivity() {
                     intent.putExtra("price", medicine["price"]?.toString() ?: "")
                     intent.putExtra("pharmacistId", medicine["pharmacistId"]?.toString() ?: "")
                     intent.putExtra("imageUrl", medicine["imageUrl"]?.toString() ?: "")
+
+                    intent.putExtra(
+                        "requiresPrescription",
+                        medicine["requiresPrescription"] as? Boolean ?: false
+                    )
+
                     startActivity(intent)
                 }
 

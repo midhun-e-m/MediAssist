@@ -1,5 +1,6 @@
 package com.mediassist.app.ui.user
 
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -54,7 +55,8 @@ class OrdersAdapter(
 
         } else {
             // 🔥 CASE 2: Single medicine order
-            val name = order["name"]?.toString() ?: ""
+            // 🔥 CASE 2: Single medicine order
+            val name = order["medicineName"]?.toString() ?: ""
             val quantity = (order["quantity"] as? Number)?.toInt() ?: 1
             val price = (order["price"] as? Number)?.toDouble() ?: 0.0
 
@@ -93,6 +95,14 @@ class OrdersAdapter(
                         "status" to "READY_FOR_DELIVERY"
                     )
                 )
+        }
+        holder.itemView.setOnClickListener {
+
+            val intent = Intent(holder.itemView.context, OrderRouteTrackingActivity::class.java)
+
+            intent.putExtra("orderId", orderId)
+
+            holder.itemView.context.startActivity(intent)
         }
     }
 

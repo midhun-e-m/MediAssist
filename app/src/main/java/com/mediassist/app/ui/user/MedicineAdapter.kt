@@ -37,6 +37,8 @@ class MedicineAdapter(
         val pharmacistId = medicine["pharmacistId"]?.toString() ?: ""
         val medicineId = medicine["id"]?.toString() ?: ""
 
+        val requiresPrescription = medicine["requiresPrescription"] as? Boolean ?: false
+
         val price = priceString.toDoubleOrNull() ?: 0.0
 
         holder.binding.tvName.text = name
@@ -77,7 +79,8 @@ class MedicineAdapter(
                     "name" to name,
                     "price" to priceString,
                     "imageUrl" to imageUrl,
-                    "pharmacistId" to pharmacistId
+                    "pharmacistId" to pharmacistId,
+                    "requiresPrescription" to requiresPrescription
                 )
             )
         }

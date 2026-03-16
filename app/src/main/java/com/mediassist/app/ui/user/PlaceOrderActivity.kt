@@ -31,18 +31,21 @@ class PlaceOrderActivity : AppCompatActivity() {
     private var pharmacistId = ""
     private var medicineImageUrl = ""
 
+    private var requiresPrescription = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlaceOrderBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 🔹 Receive Intent Data
+        // Receive Intent Data
         medicineName = intent.getStringExtra("medicineName") ?: ""
         price = intent.getStringExtra("price") ?: ""
         pharmacistId = intent.getStringExtra("pharmacistId") ?: ""
         medicineImageUrl = intent.getStringExtra("imageUrl") ?: ""
+        requiresPrescription = intent.getBooleanExtra("requiresPrescription", false)
 
-        // 🔹 Set Medicine Info
+        // Set Medicine Info
         binding.tvMedicineName.text = medicineName
         binding.tvMedicinePrice.text = "₹$price"
 
@@ -52,14 +55,20 @@ class PlaceOrderActivity : AppCompatActivity() {
                 .into(binding.imgMedicine)
         }
 
-        // 🔹 Select Prescription
+        // Hide upload button if prescription not required
+        if (!requiresPrescription) {
+            binding.btnUploadPrescription.visibility = android.view.View.GONE
+            binding.imgPrescriptionPreview.visibility = android.view.View.GONE
+        }
+
+        // Upload prescription
         binding.btnUploadPrescription.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, 101)
         }
 
-        // 🔹 Place Order
+        // Place order
         binding.btnPlaceOrder.setOnClickListener {
             validateAndUpload()
         }
@@ -88,18 +97,30 @@ class PlaceOrderActivity : AppCompatActivity() {
             return
         }
 
-        if (prescriptionUri == null) {
+        // Only check if medicine requires prescription
+        if (requiresPrescription && prescriptionUri == null) {
             Toast.makeText(this, "Upload prescription", Toast.LENGTH_SHORT).show()
             return
         }
 
-        uploadPrescription(
-            prescriptionUri!!,
-            quantity,
-            address,
-            pincode,
-            contact
-        )
+        // If prescription not required → create order directly
+        if (!requiresPrescription) {
+            createOrder(
+                "",
+                quantity,
+                address,
+                pincode,
+                contact
+            )
+        } else {
+            uploadPrescription(
+                prescriptionUri!!,
+                quantity,
+                address,
+                pincode,
+                contact
+            )
+        }
     }
 
     private fun uploadPrescription(

@@ -1,5 +1,7 @@
 package com.mediassist.app.ui.user
 
+import android.media.AudioManager
+import android.media.ToneGenerator
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.Button
@@ -14,6 +16,7 @@ class EmergencyWarningActivity : AppCompatActivity() {
     private lateinit var cancelButton: Button
 
     private var timer: CountDownTimer? = null
+    private var toneGenerator: ToneGenerator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,10 +26,13 @@ class EmergencyWarningActivity : AppCompatActivity() {
         countdownText = findViewById(R.id.countdownText)
         cancelButton = findViewById(R.id.cancelEmergency)
 
+        toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
+
         startCountdown()
 
         cancelButton.setOnClickListener {
             timer?.cancel()
+            toneGenerator?.release()
             finish()
         }
     }
@@ -40,16 +46,18 @@ class EmergencyWarningActivity : AppCompatActivity() {
                 val seconds = millisUntilFinished / 1000
                 countdownText.text = "Sending emergency in $seconds"
 
+                //  play beep every second
+                toneGenerator?.startTone(ToneGenerator.TONE_PROP_BEEP, 200)
             }
 
             override fun onFinish() {
 
+                toneGenerator?.release()
+
                 EmergencyTriggerService.triggerEmergency(this@EmergencyWarningActivity)
                 finish()
-
             }
 
         }.start()
-
     }
 }

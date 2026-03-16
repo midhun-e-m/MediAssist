@@ -2,6 +2,7 @@ package com.mediassist.app.ui.user
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,8 +19,8 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
 import java.io.IOException
-import kotlin.math.*
 
 class NearbyHospitalsActivity : AppCompatActivity() {
 
@@ -30,6 +31,8 @@ class NearbyHospitalsActivity : AppCompatActivity() {
 
     private val hospitalList = mutableListOf<Hospital>()
     private val client = OkHttpClient()
+
+    private lateinit var userLocation: GeoPoint
 
     private val LOCATION_PERMISSION_CODE = 1001
 
@@ -47,7 +50,7 @@ class NearbyHospitalsActivity : AppCompatActivity() {
         map = findViewById(R.id.map)
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.setMultiTouchControls(true)
-        map.controller.setZoom(16.0)
+        map.controller.setZoom(15.0)
 
         recyclerView = findViewById(R.id.hospitalRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -80,8 +83,6 @@ class NearbyHospitalsActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         if (requestCode == LOCATION_PERMISSION_CODE &&
             grantResults.isNotEmpty() &&
             grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -102,8 +103,8 @@ class NearbyHospitalsActivity : AppCompatActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) return
 
-        // Try fast last location first
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+
             if (location != null) {
                 updateMap(location.latitude, location.longitude)
             } else {
@@ -138,19 +139,30 @@ class NearbyHospitalsActivity : AppCompatActivity() {
 
         map.overlays.clear()
 
-        val userPoint = GeoPoint(lat, lng)
-        map.controller.setCenter(userPoint)
+        userLocation = GeoPoint(lat, lng)
 
-        addUserMarker(userPoint)
+        map.controller.setCenter(userLocation)
+
+        addUserMarker(userLocation)
 
         fetchNearbyHospitals(lat, lng)
     }
 
+    // ================= USER MARKER =================
+
     private fun addUserMarker(point: GeoPoint) {
+
         val marker = Marker(map)
         marker.position = point
         marker.title = "You are here"
+
+        marker.icon = ContextCompat.getDrawable(
+            this,
+            org.osmdroid.library.R.drawable.ic_menu_mylocation
+        )
+
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+
         map.overlays.add(marker)
     }
 
@@ -182,6 +194,7 @@ class NearbyHospitalsActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
+
                 val body = response.body?.string()
                 if (!body.isNullOrEmpty()) {
                     parseHospitals(body, userLat, userLng)
@@ -200,8 +213,10 @@ class NearbyHospitalsActivity : AppCompatActivity() {
         for (i in 0 until elements.length()) {
 
             val obj = elements.getJSONObject(i)
+
             val lat = obj.getDouble("lat")
             val lon = obj.getDouble("lon")
+
             val tags = obj.optJSONObject("tags")
             val name = tags?.optString("name", "Hospital") ?: "Hospital"
 
@@ -209,7 +224,7 @@ class NearbyHospitalsActivity : AppCompatActivity() {
         }
     }
 
-    // ================= DISTANCE (Haversine) =================
+    // ================= DISTANCE =================
 
     private fun fetchRoadDistance(
         userLat: Double,
@@ -223,33 +238,28 @@ class NearbyHospitalsActivity : AppCompatActivity() {
             "https://router.project-osrm.org/route/v1/driving/" +
                     "$userLng,$userLat;$hospitalLng,$hospitalLat?overview=false"
 
-        val request = Request.Builder()
-            .url(url)
-            .build()
+        val request = Request.Builder().url(url).build()
 
         client.newCall(request).enqueue(object : Callback {
 
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-            }
+            override fun onFailure(call: Call, e: IOException) {}
 
             override fun onResponse(call: Call, response: Response) {
 
                 val body = response.body?.string() ?: return
                 val json = JSONObject(body)
 
-                val routes = json.getJSONArray("routes")
-                if (routes.length() == 0) return
-
-                val route = routes.getJSONObject(0)
+                val route = json.getJSONArray("routes").getJSONObject(0)
 
                 val distanceMeters = route.getDouble("distance")
                 val durationSeconds = route.getDouble("duration")
 
-                val distanceKm = distanceMeters / 1000.0
-                val durationMinutes = durationSeconds / 60.0
+                val distanceKm = distanceMeters / 1000
+                val durationMinutes = durationSeconds / 60
 
                 runOnUiThread {
+
+                    val hospitalPoint = GeoPoint(hospitalLat, hospitalLng)
 
                     hospitalList.add(
                         Hospital(
@@ -265,13 +275,79 @@ class NearbyHospitalsActivity : AppCompatActivity() {
                     hospitalAdapter = HospitalAdapter(hospitalList)
                     recyclerView.adapter = hospitalAdapter
 
-                    // Add marker
                     val marker = Marker(map)
-                    marker.position = GeoPoint(hospitalLat, hospitalLng)
+                    marker.position = hospitalPoint
+
                     marker.title =
                         "$hospitalName\n%.2f km | %.0f mins".format(distanceKm, durationMinutes)
-                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+
+                    marker.icon = ContextCompat.getDrawable(
+                        this@NearbyHospitalsActivity,
+                        org.osmdroid.library.R.drawable.ic_menu_compass
+                    )
+
+                    marker.setOnMarkerClickListener { _, _ ->
+                        drawRoute(userLocation, hospitalPoint)
+                        true
+                    }
+
                     map.overlays.add(marker)
+
+                    map.invalidate()
+                }
+            }
+        })
+    }
+
+    // ================= DRAW ROUTE =================
+
+    private fun drawRoute(start: GeoPoint, end: GeoPoint) {
+
+        val url =
+            "https://router.project-osrm.org/route/v1/driving/" +
+                    "${start.longitude},${start.latitude};${end.longitude},${end.latitude}?overview=full&geometries=geojson"
+
+        val request = Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object : Callback {
+
+            override fun onFailure(call: Call, e: IOException) {}
+
+            override fun onResponse(call: Call, response: Response) {
+
+                val body = response.body?.string() ?: return
+
+                val json = JSONObject(body)
+                val routes = json.getJSONArray("routes")
+
+                if (routes.length() == 0) return
+
+                val geometry =
+                    routes.getJSONObject(0)
+                        .getJSONObject("geometry")
+                        .getJSONArray("coordinates")
+
+                val routePoints = mutableListOf<GeoPoint>()
+
+                for (i in 0 until geometry.length()) {
+
+                    val coord = geometry.getJSONArray(i)
+
+                    val lon = coord.getDouble(0)
+                    val lat = coord.getDouble(1)
+
+                    routePoints.add(GeoPoint(lat, lon))
+                }
+
+                runOnUiThread {
+
+                    val polyline = Polyline()
+
+                    polyline.setPoints(routePoints)
+                    polyline.outlinePaint.color = Color.BLUE
+                    polyline.outlinePaint.strokeWidth = 10f
+
+                    map.overlays.add(polyline)
 
                     map.invalidate()
                 }
